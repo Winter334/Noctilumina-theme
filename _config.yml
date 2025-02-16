@@ -363,6 +363,17 @@ quicklink:
 #! DO NOT EDIT THE FOLLOWING `vendors` SETTINGS
 #! UNLESS YOU KNOW WHAT YOU ARE DOING
 #! ---------------------------------------------------------------
+
+busuanzi:
+  pv:
+    enable: true
+    title: 本站总访问量
+    quantifier: 次
+  uv:
+    enable: true
+    title: 本站总访客量
+    quantifier: 人
+
 vendors:
   cdns:
     cdnjs: https://s4.zstatic.net/ajax/libs
