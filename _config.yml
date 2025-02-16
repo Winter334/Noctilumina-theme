@@ -374,6 +374,8 @@ busuanzi:
     title: 本站总访客量
     quantifier: 人
 
+createTime: "YYYY/MM/DD HH:MM:SS" #站点存活时间显示
+
 vendors:
   cdns:
     cdnjs: https://s4.zstatic.net/ajax/libs
