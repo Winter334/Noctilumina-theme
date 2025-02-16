@@ -372,7 +372,7 @@ busuanzi:
   uv:
     enable: true
     title: 本站总访客量
-    quantifier: 人
+    quantifier: 人次
 
 createTime: "YYYY/MM/DD HH:MM:SS" #站点存活时间显示
 
