@@ -8,6 +8,7 @@ import {
   CONFIG,
   loadCat,
   menuToggle,
+  setImgMover,
   setLocalHash, setLocalUrl, setOriginTitle,
   sideBar,
   toolPlayer
@@ -44,6 +45,8 @@ export const siteRefresh = async (reload) => {
 
   setLocalHash(0)
   setLocalUrl(window.location.href)
+
+  setImgMover(document.getElementById('imgs'))
 
   vendorCss('katex');
   await import('katex/dist/contrib/copy-tex.mjs')

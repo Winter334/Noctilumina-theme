@@ -61,15 +61,15 @@ html(lang=page.language?page.language:config.language, style=theme.grayMode ? 'f
                                         li(class="item" style=`background-image: url("${image}");`)
                             else
                                 img(src=covers loading="eager" decoding="async" fetchpriority="high" alt=title)
-            div(id="waves")
-                svg(class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto")
-                    defs
-                        path(id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z")
-                    g(class="parallax")
-                        use(xlink:href="#gentle-wave" x="48" y="0")
-                        use(xlink:href="#gentle-wave" x="48" y="3")
-                        use(xlink:href="#gentle-wave" x="48" y="5")
-                        use(xlink:href="#gentle-wave" x="48" y="7")
+                div(id="waves")
+                    svg(class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto")
+                        defs
+                            path(id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z")
+                        g(class="parallax")
+                            use(xlink:href="#gentle-wave" x="48" y="0")
+                            use(xlink:href="#gentle-wave" x="48" y="3")
+                            use(xlink:href="#gentle-wave" x="48" y="5")
+                            use(xlink:href="#gentle-wave" x="48" y="7")
             main
                 div(class="inner")
                     div(id="main" class="pjax")

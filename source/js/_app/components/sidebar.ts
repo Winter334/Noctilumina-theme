@@ -221,6 +221,10 @@ export const goToCommentHandle = () => {
   pageScroll(document.getElementById('comments'))
 }
 
+export const headertopdown = () => {
+  pageScroll(document.getElementById('main'))
+}
+
 export const menuActive = () => {
   $dom.each('.menu .item:not(.title)', (element) => {
     const target = <HTMLAnchorElement> element.querySelector('a[href]')

@@ -1,10 +1,11 @@
-import { backToTopHandle, goToBottomHandle, goToCommentHandle, sideBarToggleHandle } from '../components/sidebar'
+import { backToTopHandle, goToBottomHandle, goToCommentHandle, headertopdown, sideBarToggleHandle } from '../components/sidebar'
 import {
+  angleBtn,
   backToTop,
   goToComment,
   loadCat,
   menuToggle,
-  quickBtn, setBackToTop, setGoToComment, setShowContents, setToolBtn,
+  quickBtn, setAngleBtn, setBackToTop, setGoToComment, setShowContents, setToolBtn,
   setToolPlayer,
   showContents,
   siteHeader,
@@ -36,6 +37,13 @@ export default function domInit () {
     }))
   }
 
+  if (!angleBtn) {
+    setAngleBtn(createChild(siteHeader, 'div', {
+      id: 'angle',
+      innerHTML: '<span><i class="ic i-angle-down" aria-hidden="true"></i></span>'
+    }))
+  }
+
   setToolPlayer(toolBtn.querySelector('.player'))
   setBackToTop(toolBtn.querySelector('.back-to-top'))
   setGoToComment(toolBtn.querySelector('.chat'))
@@ -44,6 +52,7 @@ export default function domInit () {
   backToTop.addEventListener('click', backToTopHandle)
   goToComment.addEventListener('click', goToCommentHandle)
   showContents.addEventListener('click', sideBarToggleHandle)
+  angleBtn.addEventListener('click', headertopdown)
 
   if (__shokax_player__) {
     mediaPlayer(toolPlayer)

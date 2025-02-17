@@ -17,7 +17,8 @@ import {
   setSiteNavHeight,
   setHeaderHightInner,
   setHeaderHight,
-  setOWinHeight, setOWinWidth, setDiffY, setTitleTime, CONFIG
+  setOWinHeight, setOWinWidth, setDiffY, setTitleTime, CONFIG,
+  imgMover
 } from './globalVars'
 import { changeMetaTheme } from './themeColor'
 import { Loader } from './thirdparty'
@@ -54,6 +55,14 @@ export const scrollHandle = () => {
   const SHOW = window.scrollY > headerHightInner
   // 判断页面是否开始滚动
   const startScroll = window.scrollY > 0
+
+  let oVal = Math.round(Math.min(300 * window.pageYOffset / contentVisibilityHeight, 100)) / -5;
+  let max = 200 + window.pageYOffset;
+  if (oVal > max) {
+    oVal = max;
+  }
+  imgMover.style.transform = 'translate3d(0,' + oVal + 'vh,0)';
+  imgMover.style.webkitTransform  = 'translate3d(0,' + oVal + 'vh,0)';
 
   // 根据条件修改 meta theme
   if (SHOW) {

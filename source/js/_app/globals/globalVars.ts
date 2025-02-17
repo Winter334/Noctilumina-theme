@@ -19,6 +19,8 @@ export const quickBtn = document.getElementById('quick')
 export const sideBar = document.getElementById('sidebar')
 export const siteBrand = document.getElementById('brand')
 export let toolBtn = document.getElementById('tool')
+export let angleBtn = document.getElementById('angle')
+export let imgMover = document.getElementById('imgs')
 export let toolPlayer
 export let backToTop: HTMLElement
 export let goToComment
@@ -92,6 +94,14 @@ export function setShowContents (value:any):void {
 
 export function setToolBtn (value:HTMLElement):void {
   toolBtn = value
+}
+
+export function setAngleBtn (value:HTMLElement):void {
+  angleBtn = value
+}
+
+export function setImgMover(value: HTMLElement) {
+  imgMover = value
 }
 
 export function setSiteSearch (value:HTMLElement):void {
