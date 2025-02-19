@@ -6,6 +6,7 @@ div(class="meta")
             span(class="text")
                 !=__('footer.total_views') + __('symbol.colon')
             - var prefixedPath = post.path.startsWith('/') ? post.path : '/' + post.path
+            - prefixedPath = prefixedPath.replace(/\/index\.html$/, '/'); // 去掉末尾的index.html
             span(id="twikoo_visitors" class="waline-pageview-count" data-path=prefixedPath)
                 !=__('footer.loading')
     if date(post.date) !== date(post.updated) || time(post.date) !== time(post.updated)
