@@ -364,7 +364,6 @@ quicklink:
 #! UNLESS YOU KNOW WHAT YOU ARE DOING
 #! ---------------------------------------------------------------
 
-createTime: "YYYY/MM/DD HH:MM:SS" #站点存活时间显示
 
 vendors:
   cdns:
