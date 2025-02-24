@@ -15,6 +15,7 @@ test.html
 /docs/.vuepress/dist/
 /docs/.vuepress/.temp
 *.js
+!scripts/*.js
 !*.test.js
 test.ts
 *.d.ts
