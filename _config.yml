@@ -236,6 +236,8 @@ summary:
 # secend value is the name of Font icon.
 social:
   github: https://github.com/yourname || github || "#191717"
+  #bilibili: https://space.bilibili.com/106140797 || bilibili || "#fb7299"
+  #rss: https://lyrashore.com/atom.xml || rss || "#ff7200"
   #gitee: https://gitee.com/yourname || gitee || "#e60026"
   #google: https://plus.google.com/yourname || google
   #twitter: https://twitter.com/yourname || twitter || "#00aff0"
@@ -358,6 +360,8 @@ quicklink:
   # For more flexibility you can add some patterns (RegExp, Function, or Array) to ignores.
   # See: https://github.com/GoogleChromeLabs/quicklink#custom-ignore-patterns
   ignores:
+
+createTime: "YYYY/MM/DD HH:MM:SS" #建站时间，用于计算站点运行时长
 
 #! ---------------------------------------------------------------
 #! DO NOT EDIT THE FOLLOWING `vendors` SETTINGS
