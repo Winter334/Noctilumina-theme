@@ -15,6 +15,7 @@ export const walineComment = function () {
     wordLimit: CONFIG.waline.wordLimit,
     pageSize: CONFIG.waline.pageSize,
     pageview: CONFIG.waline.pageview,
+    search: false,
     path: window.location.pathname,
     dark: 'html[data-theme="dark"]'
   })
