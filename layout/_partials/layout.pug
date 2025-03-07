@@ -42,7 +42,8 @@ html(lang=page.language?page.language:config.language, style=theme.grayMode ? 'f
                                         p(class="artboard")
                                             != alternate
                                     h1(itemprop="name headline" class="title")
-                                        != title
+                                        span(id="typer-title")
+                                            != title
                                 if subtitle
                                     p(class="meta" itemprop="description")
                                         != `= ${subtitle} =`
@@ -142,6 +143,7 @@ html(lang=page.language?page.language:config.language, style=theme.grayMode ? 'f
         != vendor_js('jquery')
         != vendor_js('fancybox')
         != vendor_js('justifiedGallery')
+        != vendor_js('echarts')
 
         if theme.polyfill.enable
             script(src=`https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?version=4.8.0&features=${theme.polyfill.features}` defer)

@@ -89,7 +89,7 @@ function postMessage(path, content, dbPath, startMessage) {
         Authorization: `Bearer ${config.openai.apikey}`
       };
       const requestBody = {
-        model: "gpt-3.5-turbo",
+        model: hexo.theme.config.summary.openai.model || "gpt-3.5-turbo",
         messages: [{ role: "user", content: `${startMessage} ${content}` }],
         temperature: 0.7
       };
