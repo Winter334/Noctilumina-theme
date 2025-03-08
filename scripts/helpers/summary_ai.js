@@ -48,9 +48,11 @@ function postMessage(path, content, dbPath, startMessage) {
           method: "POST",
           headers: requestHeaders,
           body: JSON.stringify(requestBody)
-        }).then((response) => {
+        }).then(async (response) => {
           if (!response.ok) {
-            throw Error("ERROR: Failed to get summary from Openai API");
+            const errorData = await response.json();
+            hexo.log.error(`API Error: ${JSON.stringify(errorData)}`); // 输出详细错误
+            throw Error(`API Error: ${errorData.error?.message}`);
           }
           response.json().then((data) => {
             const summary = data.choices[0].message.content;
