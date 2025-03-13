@@ -22,7 +22,9 @@ const siteInit = async () => {
       '.twikoo',
       '.pjax',
       '.leancloud-recent-comment',
-      'script[data-config]'
+      'script[data-config]',
+      '#typer-title',
+      'post-echarts'
     ],
     cacheBust: false
   }))

@@ -74,7 +74,8 @@ hexo.extend.generator.register("script", function(locals) {
       requiredMeta: theme.waline.requiredMeta,
       wordLimit: theme.waline.wordLimit,
       pageSize: theme.waline.pageSize,
-      pageview: theme.waline.pageview
+      pageview: theme.waline.pageview,
+      search: theme.waline.search
     },
     twikoo: {
       envId: theme.twikoo.envId,
