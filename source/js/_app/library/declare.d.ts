@@ -103,6 +103,7 @@ interface configType {
     wordLimit: number
     pageSize: number
     pageview: boolean
+    search: boolean
   }
   twikoo: {
     envId: string
