@@ -104,6 +104,10 @@ interface configType {
     pageSize: number
     pageview: boolean
     search: boolean
+    authCode: string
+    uploadNameType: string
+    uploadFolder: string
+    apiUrl: string
   }
   twikoo: {
     envId: string

@@ -17,7 +17,51 @@ export const walineComment = function () {
     pageview: CONFIG.waline.pageview,
     search: CONFIG.waline.search,
     path: window.location.pathname,
-    dark: 'html[data-theme="dark"]'
+    dark: 'html[data-theme="dark"]',
+    imageUploader: (file) => {
+      const authCode = CONFIG.waline.authCode || 'commenting' // 从配置中获取 authCode
+      const uploadNameType = CONFIG.waline.uploadNameType || 'default' // 默认文件命名方式
+      const uploadFolder = CONFIG.waline.uploadFolder || '' // 默认上传目录
+      const apiUrl = CONFIG.waline.apiUrl || 'https://imgbed.whitesand.top' // 从配置中获取 API 地址
+  
+      let formData = new FormData()
+  
+      // 添加文件到 FormData
+      formData.append('file', file)
+  
+      // 添加 Query 参数
+      const queryParams = new URLSearchParams({
+          authCode: authCode,
+          uploadNameType: uploadNameType,
+          uploadFolder: uploadFolder,
+      })
+  
+      // 发送请求
+      return fetch(`${apiUrl}/upload?${queryParams.toString()}`, {
+          method: 'POST',
+          headers: {
+              'User-Agent': 'ApiNoctilumina/1.0.0 (https://lyrashore.com)', // 添加 User-Agent 头
+          },
+          body: formData,
+      })
+      .then((resp) => {
+          if (!resp.ok) {
+              throw new Error('Network response was not ok');
+          }
+          return resp.json()
+      })
+      .then((resp) => {
+          if (Array.isArray(resp) && resp.length > 0) {
+              return apiUrl + resp[0].src; // 返回获得的图片链接
+          } else {
+              throw new Error('No data returned from the upload API');
+          }
+      })
+      .catch((error) => {
+          console.error('Error uploading file:', error)
+          throw error; // 重新抛出错误
+      })
+    }
   })
 }
 

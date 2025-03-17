@@ -32,29 +32,53 @@ export const pagePosition = () => {
 }
 
 export const positionInit = (comment?: boolean) => {
-  // 获取页面锚点
-  const anchor = window.location.hash
+  const handleScroll = () => {
+    const anchor = window.location.hash
+    let target: HTMLElement | number | null = null
 
-  let target = null
-  if (LOCAL_HASH) {
-    $storage.del(LOCAL_URL)
-    return
+    // 清除本地记录逻辑保持不变
+    if (LOCAL_HASH) {
+      $storage.del(LOCAL_URL)
+      return
+    }
+
+    // 处理哈希滚动
+    if (anchor) {
+      try {
+        const decodedHash = decodeURIComponent(anchor).substring(1) // 完整解码哈希值
+        target = document.getElementById(decodedHash)
+        
+        // 如果找不到元素，可能是动态内容未加载，延时重试
+        if (!target && comment) {
+          setTimeout(() => {
+            const retryTarget = document.getElementById(decodedHash)
+            if (retryTarget) pageScroll(retryTarget)
+          }, 800)
+        }
+      } catch (e) {
+        console.error("Hash decode error:", e)
+      }
+    } else {
+      // 无哈希时使用保存的滚动位置
+      target = CONFIG.auto_scroll ? parseInt($storage.get(LOCAL_URL)) : 0
+    }
+
+    // 执行滚动逻辑
+    if (target) {
+      requestAnimationFrame(() => {
+        pageScroll(target!)
+        setLocalHash(1)
+      })
+    }
   }
 
-  if (anchor) {
-    target = document.querySelector(decodeURI(anchor))
+  // 执行时机控制
+  if (document.readyState !== "loading") {
+    setTimeout(handleScroll, 50) // 确保在浏览器默认行为之后执行
   } else {
-    target = CONFIG.auto_scroll ? parseInt($storage.get(LOCAL_URL)) : 0
-  }
-
-  if (target) {
-    pageScroll(target)
-    setLocalHash(1)
-  }
-
-  if (comment && anchor && !LOCAL_HASH) {
-    pageScroll(target)
-    setLocalHash(1)
+    document.addEventListener("DOMContentLoaded", () => {
+      setTimeout(handleScroll, 50)
+    })
   }
 }
 

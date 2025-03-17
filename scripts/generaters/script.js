@@ -75,7 +75,11 @@ hexo.extend.generator.register("script", function(locals) {
       wordLimit: theme.waline.wordLimit,
       pageSize: theme.waline.pageSize,
       pageview: theme.waline.pageview,
-      search: theme.waline.search
+      search: theme.waline.search,
+      authCode: theme.waline.authCode, // Authentication code for comments
+      uploadNameType: theme.waline.uploadNameType, // Type of upload name
+      uploadFolder: theme.waline.uploadFolder, // Folder for file uploads
+      apiUrl: theme.waline.apiUrl // API URL for Waline
     },
     twikoo: {
       envId: theme.twikoo.envId,
