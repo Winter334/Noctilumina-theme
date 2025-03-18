@@ -98,9 +98,9 @@ hexo.extend.generator.register("script", function(locals) {
     siteConfig.audio = theme.audio;
   }
   let enterPoint, patchDir;
-  if (import_node_fs.default.existsSync("themes/shokaX/source/js/_app/pjax/siteInit.ts")) {
-    patchDir = "themes/shokaX/source/js/_app/components/cloudflare.ts";
-    enterPoint = "themes/shokaX/source/js/_app/pjax/siteInit.ts";
+  if (import_node_fs.default.existsSync("themes/shokax/source/js/_app/pjax/siteInit.ts")) {
+    patchDir = "themes/shokax/source/js/_app/components/cloudflare.ts";
+    enterPoint = "themes/shokax/source/js/_app/pjax/siteInit.ts";
   } else {
     patchDir = "node_modules/hexo-theme-shokax/source/js/_app/components/cloudflare.ts";
     enterPoint = "node_modules/hexo-theme-shokax/source/js/_app/pjax/siteInit.ts";
