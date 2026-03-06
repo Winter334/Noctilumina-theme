@@ -22,7 +22,7 @@ export const walineComment = function () {
       const authCode = CONFIG.waline.authCode || 'commenting' // 从配置中获取 authCode
       const uploadNameType = CONFIG.waline.uploadNameType || 'default' // 默认文件命名方式
       const uploadFolder = CONFIG.waline.uploadFolder || '' // 默认上传目录
-      const apiUrl = CONFIG.waline.apiUrl || 'https://imgbed.whitesand.top' // 从配置中获取 API 地址
+      const apiUrl = CONFIG.waline.apiUrl || 'https://imgbed.lyrashore.com' // 从配置中获取 API 地址
   
       let formData = new FormData()
   
