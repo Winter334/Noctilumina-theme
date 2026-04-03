@@ -22,39 +22,209 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var import_node_crypto = require("node:crypto");
 var import_promises = __toESM(require("node:fs/promises"));
+const THINK_TAG_RE = /<think>[\s\S]*?<\/think>/gi;
+function appendContent(parts, content) {
+  if (!content)
+    return;
+  if (typeof content === "string") {
+    parts.push(content);
+    return;
+  }
+  if (Array.isArray(content)) {
+    for (const item of content)
+      appendContent(parts, item);
+    return;
+  }
+  if (typeof content === "object") {
+    if (typeof content.text === "string")
+      parts.push(content.text);
+    else if (typeof content.content === "string")
+      parts.push(content.content);
+    else if (Array.isArray(content.content))
+      appendContent(parts, content.content);
+  }
+}
+function extractChoiceContent(choice) {
+  const parts = [];
+  appendContent(parts, choice?.delta?.content);
+  appendContent(parts, choice?.message?.content);
+  return parts.join("");
+}
+function sanitizeOutput(text) {
+  if (!text)
+    return "";
+  return text.replace(THINK_TAG_RE, "").replace(/<think>|<\/think>/gi, "").replace(/\r/g, "").split("\n").map((line) => line.replace(/^\s*[-*•]+\s*/, "").trim()).filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
+}
+function parseSseStream(raw) {
+  const parts = [];
+  let eventBuffer = [];
+  const flushEvent = () => {
+    if (!eventBuffer.length)
+      return;
+    const data = eventBuffer.join("\n").trim();
+    eventBuffer = [];
+    if (!data || data === "[DONE]")
+      return;
+    try {
+      const payload = JSON.parse(data);
+      const choice = Array.isArray(payload.choices) ? payload.choices[0] || {} : {};
+      const content = extractChoiceContent(choice);
+      if (content)
+        parts.push(content);
+    } catch (error) {
+    }
+  };
+  for (const line of String(raw || "").split(/\r?\n/)) {
+    if (!line.trim()) {
+      flushEvent();
+      continue;
+    }
+    if (!line.startsWith("data:"))
+      continue;
+    eventBuffer.push(line.slice(5).trim());
+  }
+  flushEvent();
+  return sanitizeOutput(parts.join(""));
+}
+function parseJsonBody(raw) {
+  const payload = JSON.parse(raw);
+  if (payload?.error) {
+    const message = payload.error.message || payload.error.code || JSON.stringify(payload.error);
+    throw new Error(message);
+  }
+  const choice = Array.isArray(payload?.choices) ? payload.choices[0] || {} : {};
+  const content = extractChoiceContent(choice);
+  if (content)
+    return sanitizeOutput(content);
+  return sanitizeOutput(raw);
+}
+function extractText(raw, contentType = "") {
+  const text = String(raw || "").trim();
+  if (!text)
+    return "";
+  if (contentType.includes("text/event-stream") || text.startsWith("data:")) {
+    return parseSseStream(text);
+  }
+  try {
+    return parseJsonBody(text);
+  } catch (error) {
+    return sanitizeOutput(text);
+  }
+}
+function extractErrorMessage(raw, contentType = "") {
+  const text = String(raw || "").trim();
+  if (!text)
+    return "";
+  try {
+    if (contentType.includes("text/event-stream") || text.startsWith("data:")) {
+      return parseSseStream(text);
+    }
+    const payload = JSON.parse(text);
+    if (payload?.error) {
+      return payload.error.message || payload.error.code || JSON.stringify(payload.error);
+    }
+    return sanitizeOutput(text);
+  } catch (error) {
+    return sanitizeOutput(text).slice(0, 300);
+  }
+}
+async function callSummaryApi({
+  apiUrl,
+  apiKey,
+  model,
+  messages,
+  temperature,
+  requestTimeoutMs = 18e4,
+  maxTokens
+}) {
+  const response = await fetch(apiUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "text/event-stream, application/json",
+      "Authorization": `Bearer ${apiKey}`,
+      "User-Agent": "shokax-summary-native/1.0"
+    },
+    body: JSON.stringify({
+      model,
+      messages,
+      temperature,
+      stream: false,
+      ...maxTokens ? { max_tokens: maxTokens } : {}
+    }),
+    signal: AbortSignal.timeout(requestTimeoutMs)
+  });
+  const raw = await response.text();
+  const contentType = response.headers.get("content-type") || "";
+  if (!response.ok) {
+    const detail = extractErrorMessage(raw, contentType);
+    throw new Error(`Error: ${response.status} ${response.statusText}${detail ? ` - ${detail}` : ""}`);
+  }
+  const text = extractText(raw, contentType);
+  if (!text) {
+    throw new Error("Summary API returned empty content.");
+  }
+  return text;
+}
+async function compressSummaryIfNeeded({
+  apiUrl,
+  apiKey,
+  model,
+  temperature,
+  summary,
+  maxChars,
+  requestTimeoutMs
+}) {
+  if (!maxChars || summary.length <= maxChars) {
+    return summary;
+  }
+  return callSummaryApi({
+    apiUrl,
+    apiKey,
+    model,
+    temperature,
+    requestTimeoutMs,
+    maxTokens: 120,
+    messages: [{
+      role: "system",
+      content: `你是一名中文博客摘要压缩助手。请把用户给出的摘要压缩成一段中文纯文本，长度不超过 ${maxChars} 个中文字符，不要标题、不要项目符号、不要换行、不要解释。保留主题、关键结论与实际价值，不要杜撰。`
+    }, {
+      role: "user",
+      content: summary
+    }]
+  });
+}
 async function getSummaryByAPI(content) {
   const apiKey = hexo.theme.config.summary.apiKey;
   const apiUrl = hexo.theme.config.summary.apiUrl;
   const model = hexo.theme.config.summary.model;
   const temperature = hexo.theme.config.summary.temperature ?? 1.3;
   const initalPrompt = hexo.theme.config.summary.initalPrompt;
-  const res = await fetch(apiUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${apiKey}`
-    },
-    body: JSON.stringify({
-      model,
-      messages: [{
-        role: "system",
-        content: `${initalPrompt}`
-      }, {
-        role: "user",
-        content: `${content}`
-      }],
-      temperature
-    })
+  const requestTimeoutMs = hexo.theme.config.summary.requestTimeoutMs ?? 18e4;
+  const maxChars = hexo.theme.config.summary.maxChars ?? 140;
+  const summary = await callSummaryApi({
+    apiUrl,
+    apiKey,
+    model,
+    temperature,
+    requestTimeoutMs,
+    messages: [{
+      role: "system",
+      content: `${initalPrompt}`
+    }, {
+      role: "user",
+      content: `${content}`
+    }]
   });
-  if (!res.ok) {
-    throw new Error(`Error: ${res.status} ${res.statusText}`);
-  }
-  const data = await res.json();
-  if (data.error) {
-    throw new Error(`Error: ${data.error.message}`);
-  }
-  const summary = data.choices[0].message.content;
-  return summary;
+  return compressSummaryIfNeeded({
+    apiUrl,
+    apiKey,
+    model,
+    temperature,
+    summary,
+    maxChars,
+    requestTimeoutMs
+  });
 }
 class SummaryDatabase {
   fileChanged;
