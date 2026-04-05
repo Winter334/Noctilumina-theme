@@ -99,7 +99,15 @@ hexo.extend.helper.register("_url", function(path, text, options = {}) {
   if (attrs.class && Array.isArray(attrs.class)) {
     attrs.class = attrs.class.join(" ");
   }
-  return (0, import_hexo_util.htmlTag)(tag, attrs, decodeURI(text), false);
+  let safeText = text;
+  if (typeof text === "string") {
+    try {
+      safeText = decodeURI(text);
+    } catch {
+      safeText = text;
+    }
+  }
+  return (0, import_hexo_util.htmlTag)(tag, attrs, safeText, false);
 });
 hexo.extend.helper.register("_image_url", function(img, path = "") {
   const { statics } = hexo.theme.config;
